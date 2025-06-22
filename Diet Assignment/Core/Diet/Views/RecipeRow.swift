@@ -13,6 +13,7 @@ struct RecipeRow: View {
     let recipe: Diet.Recipe?
     var onSelectedTap: (() -> Void)? = nil
     var onTapFavorite: (() -> Void)? = nil
+    var onTapFed: (() -> Void)? = nil
     
     var body: some View {
         
@@ -28,14 +29,7 @@ struct RecipeRow: View {
                     .padding(.horizontal, 8)
                 
                 HStack {
-                    KFImage(URL(string: recipe?.image ?? ""))
-                        .placeholder { _ in
-                            ProgressView()
-                        }
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 110, height: 110)
-                        .clipShape(.rect(cornerRadius: 8))
+                    recipeImageLayer
                     
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .top) {
@@ -65,37 +59,7 @@ struct RecipeRow: View {
                             .fill(.appPlaceholder)
                             .frame(height: 1)
                         
-                        HStack(spacing: 8) {
-                            AppButton(
-                                icon: .customize,
-                                title: "Customize",
-                                hasBorder: false,
-                                color: .appBlue,
-                                font: .dmSansFont(weight: .Bold, size: 12),
-                                fontColor: .white,
-                                onTap: {
-                                    debugPrint("Customize Tapped")
-                                }
-                            )
-                            
-                            if recipe?.isSelected ?? false == false {
-                                AppButton(
-                                    icon: recipe?.isCompleted?.toBool() == true ? .checkSelected : .checkCircle,
-                                    title: recipe?.isCompleted?.toBool() == true ?  "Fed" : "Fed?",
-                                    hasBorder: true,
-                                    color:  recipe?.isCompleted?.toBool() == true ? .appGrayText : .appBlue,
-                                    font: .dmSansFont(weight: recipe?.isCompleted?.toBool() == true ? .Regular : .Bold, size: 12),
-                                    fontColor: recipe?.isCompleted?.toBool() == true ? .appGrayText : .appBlue,
-                                    onTap: {
-                                        debugPrint("Fed Tapped")
-                                    }
-                                )
-                                .foregroundStyle(.appBlue)
-                            } else {
-                                VStack {}
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
+                        appButtonsLayer
                     }
                 }
                 .padding(8)
@@ -112,4 +76,56 @@ struct RecipeRow: View {
 
 #Preview {
     RecipeRow(recipe: Diet.Recipe.mockData)
+}
+
+extension RecipeRow {
+    
+    private var recipeImageLayer: some View {
+        KFImage(URL(string: recipe?.image ?? ""))
+            .placeholder { _ in
+                ProgressView()
+            }
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 110, height: 110)
+            .clipShape(.rect(cornerRadius: 8))
+    }
+    
+    private var appButtonsLayer: some View {
+        HStack(spacing: 8) {
+            AppButton(
+                icon: .customize,
+                title: "Customize",
+                hasBorder: false,
+                color: .appBlue,
+                font: .dmSansFont(weight: .Bold, size: 12),
+                fontColor: .white,
+                onTap: {
+                    debugPrint("Customize Tapped")
+                }
+            )
+            
+            if recipe?.isSelected ?? false == false {
+                AppButton(
+                    icon: recipe?.isCompleted?.toBool() == true ? .checkSelected : .checkCircle,
+                    title: recipe?.isCompleted?.toBool() == true ?  "Fed" : "Fed?",
+                    hasBorder: true,
+                    color:  recipe?.isCompleted?.toBool() == true ? .appGrayText : .appBlue,
+                    font: .dmSansFont(weight: recipe?.isCompleted?.toBool() == true ? .Regular : .Bold, size: 12),
+                    fontColor: recipe?.isCompleted?.toBool() == true ? .appGrayText : .appBlue,
+                    onTap: {
+                        if recipe?.isCompleted?.toBool() == true {
+                            debugPrint("Already Fed")
+                        } else {
+                            onTapFed?()
+                        }
+                    }
+                )
+                .foregroundStyle(.appBlue)
+            } else {
+                VStack {}
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
 }

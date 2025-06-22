@@ -87,7 +87,7 @@ extension DietView {
                 HStack(spacing: 8) {
                     Image(.streakFire)
                     
-                    Text("^[1 streak](inflect: true)")
+                    Text("^[\(vm.streakCount) streak](inflect: true)")
                         .font(.dmSansFont(weight: .Medium, size: 14))
                         .foregroundStyle(.appGrayText)
                         .offset(y: 1)
@@ -102,7 +102,7 @@ extension DietView {
             }
             
             HStack {
-                ForEach(vm.getStreakModel(), id: \.title) { streak in
+                ForEach(vm.streaks, id: \.title) { streak in
                     VStack(spacing: 4) {
                         Text(streak.title)
                             .font(.dmSansFont(weight: .Medium, size: 12))
@@ -147,12 +147,18 @@ extension DietView {
             Image(.filter)
         }
     }
+    
     private var dietListingLayer: some View {
         LazyVStack(spacing: 8) {
             ForEach(vm.diets?.allDiets ?? [], id: \.daytime) { allDiet in
-                DietSection(dietData: allDiet)
-                    .padding(.horizontal)
-                    .background(.white, in: .rect(cornerRadius: 8))
+                DietSection(vm: .init(
+                    dietData: allDiet,
+                    onChangeCompletedStatus: { dayTime in
+                        vm.updateStreakStatus(dayTime)
+                    })
+                )
+                .padding(.horizontal)
+                .background(.white, in: .rect(cornerRadius: 8))
             }
         }
         .background(Color(uiColor: .systemGray6))

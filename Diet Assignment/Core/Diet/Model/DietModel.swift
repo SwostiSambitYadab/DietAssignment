@@ -43,7 +43,7 @@ enum Diet {
     }
 
     struct Diets: Codable {
-        let dietStreak: [String]?
+        var dietStreak: [String]?
         let allDiets: [AllDiet]?
     }
 
@@ -60,13 +60,13 @@ enum Diet {
         }
         
         let daytime, timings: String?
-        let progressStatus: ProgressStatus?
+        var progressStatus: ProgressStatus?
         var recipes: [Recipe]?
     }
     
     
     struct ProgressStatus: Codable {
-        let total, completed: Int?
+        var total, completed: Int?
         
         enum CodingKeys: String, CodingKey {
             case completed = "completed"

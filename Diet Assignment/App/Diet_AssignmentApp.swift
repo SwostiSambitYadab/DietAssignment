@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct Diet_AssignmentApp: App {
     
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {
