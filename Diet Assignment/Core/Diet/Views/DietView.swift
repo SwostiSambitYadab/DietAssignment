@@ -154,7 +154,9 @@ extension DietView {
                 DietSection(vm: .init(
                     dietData: allDiet,
                     onChangeCompletedStatus: { dayTime in
-                        vm.updateStreakStatus(dayTime)
+                        withAnimation {
+                            vm.updateStreakStatus(dayTime)
+                        }
                     })
                 )
                 .padding(.horizontal)
